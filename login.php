@@ -1,5 +1,5 @@
 <?php
-include 'database.php';
+include_once 'database.php';
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -14,19 +14,27 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
     if($result->num_rows > 0){
         $user = $result->fetch_assoc();
-        if(password_verify($password, $user['password'])){
+        //if(password_verify($password, $user['password'])){
+        if($password === $user['password']){
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['role'] = $user['role'];
 
             // Redirect based on role
             if ($user['role'] === 'admin') {
-                header("Location: admin_dashboard.php");
+                echo "Redirecting to admin dashboard.";
+                header("Location: admin_dashboard.html");
+                exit;
             } elseif ($user['role'] === 'doctor') {
-                header("Location: doctor_dashboard.php");
+                header("Location: doctor_dashboard.html");
+                exit;
             } elseif ($user['role'] === 'lab_assistant') {
-                header("Location: lab_assistant_dashboard.php");
+                header("Location: lab_assistant_dashboard.html");
+                exit;
             } else if ($user['role'] === 'patient') {
                 header("Location: patient_dashboard.html");
+                exit;
+            } else if ($user['role'] === 'nurse'){
+                header("Location: nurse.html");
                 exit;
             }else {
                 header("Location: login.php?error=Invalid role");
@@ -37,10 +45,11 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         }
         $stmt->close();
         $conn->close();
-    }
-} else {
-    header("Location: login.php?error=User not found");
-    exit;
     
+    } else {
+        header("Location: login.php?error=User not found");
+        exit;
+        
+    }
 }
 ?>

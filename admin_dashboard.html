@@ -52,7 +52,7 @@
                 try{
                     const response = await fetch(database.php);
                     const data = await response.json();
-                    cosole.log(data);
+                    console.log(data);
                     document.getElementById("output").textContext = JSON.stringify(data,null,2);
 
                 }catch(error){
