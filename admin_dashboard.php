@@ -1,3 +1,21 @@
+<?php
+session_start();
+// echo "<pre>Session Data: ";
+// print_r($_SESSION);
+// echo "</pre>";
+
+if (!isset($_SESSION['role'])) {
+    die("Session role not set.");
+}
+
+if ($_SESSION['role'] !== 'admin') {
+    die("Unauthorized access. Role: " . $_SESSION['role']);
+}
+
+//echo "Passed all checks. Now displaying HTML.";
+?>
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,13 +27,14 @@
     <body>
         <div class="container-md-4">
             <h1>Admin Dashboard</h1>
+            <h2>Welcome Admin</h2>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Manage User</h5>
                             <p class="card-text">Add, Edit, or Delete User in the system.</p>
-                            <button class="btn btn-primary" onclick="manageUser()">GO</button>
+                            <a href="manage_users.php" class="btn btn-primary">GO</a>
                         </div>
                     </div>
                 </div>
@@ -24,7 +43,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Manage Hospital</h5>
                             <p class="card-text">Add, Edit, or Delete Hospital in the system.</p>
-                            <button class="btn btn-primary" onclick="manageHospitals()">GO</button>
+                            <a href="manage_hospital.php" class="btn btn-primary">GO</a>
                         </div>
                     </div>
                 </div>
@@ -33,7 +52,7 @@
                         <div class="card-body">
                             <h5 class="card-title">View Reports</h5>
                             <p class="card-text">View all submitted Medical reports</p>
-                            <button class="btn btn-primary" onclick="viewReports()">GO</button>
+                            <a href="view_reports.php" class="btn btn-primary">GO</a>
                         </div>
                     </div>
                 </div>

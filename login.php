@@ -22,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             // Redirect based on role
             if ($user['role'] === 'admin') {
                 echo "Redirecting to admin dashboard.";
-                header("Location: admin_dashboard.html");
+                header("Location: admin_dashboard.php");
                 exit;
             } elseif ($user['role'] === 'doctor') {
                 header("Location: doctor_dashboard.html");
@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                 header("Location: lab_assistant_dashboard.html");
                 exit;
             } else if ($user['role'] === 'patient') {
-                header("Location: patient_dashboard.html");
+                header("Location: patient_dashboard.php");
                 exit;
             } else if ($user['role'] === 'nurse'){
                 header("Location: nurse.html");
