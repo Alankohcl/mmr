@@ -9,7 +9,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'patient') {
 }
 
 $patient_id = $_SESSION['user_id'];
-$query = "SELECT name, email, FROM users WHERE user_id = ?";
+$query = "SELECT name, email FROM users WHERE user_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
@@ -17,7 +17,7 @@ $result = $stmt->get_result();
 $patient = $result->fetch_assoc();
 $stmt->close();
 
-$reports_query = "SELECT report_id, patient_id, lab_assistant_id, doctor_id, created_at, remarks, FROM medical_reports WHERE patient_id = ?";
+$reports_query = "SELECT report_id, patient_id, lab_assistant_id, doctor_id, created_at, remarks FROM medical_reports WHERE patient_id = ?";
 $stmt = $conn->prepare($reports_query);
 $stmt->bind_param("i", $patient_id);
 $stmt->execute();
@@ -101,6 +101,68 @@ $stmt->close();
                     <P>No Medical Reports Found.</P>
                 <?php endif; ?>
             </div>
+
+            <!-- Trendline Selection -->
+            <div id="trendline" class="view" style="display: none">
+                <h2>Trendline Selection</h2>
+                <form id="trendlineForm" onsubmit="generateTrendline(event)">
+                    <div class="mb-3">
+                        <label for="metric" class="form-label">Select Metric</label>
+                        <select class="form-select" id="metric" name="metric">
+                            <option value="bp">Blood Pressure</option>
+                            <option value="bmi">BMI</option>
+                            <option value="hba1c">HbA1c</option>
+                            <option value="pr">Pulse Rate</option>
+                            <option value="rbs">Random Blood Sugar</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Trendline</button>
+                </form>
+                <canvas id="trendlineChart" width="400" height="200" class="mt-4"></canvas>
+            </div>
         </div>
+
+        <script>
+        // Function to show the appropriate view
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => view.style.display = 'none');
+            document.getElementById(viewId).style.display = 'block';
+        }
+
+        // Function to generate trendline
+        function generateTrendline(event) {
+            event.preventDefault();
+            const metric = document.getElementById('metric').value;
+            
+            // Fetch trendline data via AJAX
+            fetch(`fetch_trendline_data.php?metric=${metric}`)
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('trendlineChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: metric.toUpperCase(),
+                                data: data.values,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: { beginAtZero: true },
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Show the first view by default
+        showView('viewReports');
+        </script>
     </body>
 </html>

@@ -25,16 +25,16 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                 header("Location: admin_dashboard.php");
                 exit;
             } elseif ($user['role'] === 'doctor') {
-                header("Location: doctor_dashboard.html");
+                header("Location: doctor_dashboard.php");
                 exit;
             } elseif ($user['role'] === 'lab_assistant') {
-                header("Location: lab_assistant_dashboard.html");
+                header("Location: lab_assistant_dashboard.php");
                 exit;
             } else if ($user['role'] === 'patient') {
                 header("Location: patient_dashboard.php");
                 exit;
             } else if ($user['role'] === 'nurse'){
-                header("Location: nurse.html");
+                header("Location: nurse.php");
                 exit;
             }else {
                 header("Location: login.php?error=Invalid role");
