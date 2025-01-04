@@ -11,6 +11,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'lab_assistant') {
 $lab_assistant_id = $_SESSION['user_id'];
 $patient_id = $_GET['patient_id'] ?? null;
 
+if(!$patient_id){
+    echo "the patient id is not set";
+    die;
+}
+
+$check_patient_query = "SELECT * FROM users WHERE user_id = ? AND role = 'patient'";
+$stmt = $conn->prepare($check_patient_query);
+$stmt->bind_param("i", $patient_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if($result->num_rows ===0){
+    die("error: patient not found or not valid");
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Insert into blood_test table
     $blood_test_query = "INSERT INTO blood_tests (haemoglobin_level, platelet_count, neutrophils_percent, lymphocytes_percent, monocytes_percent, eosinophils_percent, basophils_percent) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -32,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param("iiisii", $patient_id, $lab_assistant_id, $_POST['doctor_id'], $_POST['remarks'], $blood_test_id, $health_metric_id);
     $stmt->execute();
 
-    echo "Medical report created successfully!";
+    echo "<script>alert('Medical Report created successfully!'); window.location.href='lab_assistant_dashboard.php';</script>";
 }
 
 $conn->close();

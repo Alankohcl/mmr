@@ -86,7 +86,7 @@ $conn->close();
                             <td><?= $patient['name'] ?></td>
                             <td><?= $patient['email'] ?></td>
                             <td>
-                                <a href="create_medical_report.php?user_id=<?= $patient['user_id'] ?>" class="btn btn-success">Create Medical Report</a>
+                                <a href="create_medical_report.php?patient_id=<?= $patient['user_id'] ?>" class="btn btn-success">Create Medical Report</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
