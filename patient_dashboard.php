@@ -88,7 +88,7 @@ $stmt->close();
                         <tbody>
                             <?php foreach($reports as $report): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($report['report_date']) ?></td>
+                                    <td><?= htmlspecialchars($report['created_at']) ?></td>
                                     <td>
                                         <a href="view_report.php?id=<?= $report['report_id'] ?>" class="btn btn-sm btn-primary">View</a>
                                         <a href="download_report.php?id=<?= $report['report_id'] ?>" class="btn btn-sm btn-success">Download</a>
