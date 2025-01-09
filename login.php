@@ -61,6 +61,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .password-container{
+                position:relative;
+            }
+            .password-container input{
+                padding-right:48px;
+            }
+            .password-container .toggle-password{
+                position:absolute;
+                right:10px;
+                top:50%;
+                transform:translateY(-50%);
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
         <?php include 'header.php' ?>
@@ -71,13 +86,36 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <br>
+
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <div>
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onClick="togglePasswordVisibility()">show</span>
+            </div>
             <br>
+
             <button type="submit">Login</button>
+
+            <p>New User?<a href="register.php">Register here</a></p>
+
         </form>
         <br>
         <h2>Admin Login</h2>
         <button onclick="window.location.href='admin_login.php'">Admin Login</button>
+
+        <script>
+            function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("password");
+            const toggleIcon = document.querySelector(".toggle-password");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.textContent = "hide"; 
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.textContent = "show";
+            }
+        }
+        </script>
     </body>
 </html>

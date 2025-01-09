@@ -1,9 +1,5 @@
 <?php
 session_start();
-// echo "<pre>Session Data: ";
-// print_r($_SESSION);
-// echo "</pre>";
-
 if (!isset($_SESSION['role'])) {
     die("Session role not set.");
 }
@@ -12,7 +8,6 @@ if ($_SESSION['role'] !== 'admin') {
     die("Unauthorized access. Role: " . $_SESSION['role']);
 }
 
-//echo "Passed all checks. Now displaying HTML.";
 ?>
 
 

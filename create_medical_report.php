@@ -26,24 +26,47 @@ if($result->num_rows ===0){
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     // Insert into blood_test table
-    $blood_test_query = "INSERT INTO blood_tests (haemoglobin_level, platelet_count, neutrophils_percent, lymphocytes_percent, monocytes_percent, eosinophils_percent, basophils_percent) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $blood_test_query = "INSERT INTO blood_tests (
+    haemoglobin_level, platelet_count, neutrophils_percent, 
+    lymphocytes_percent, monocytes_percent, eosinophils_percent, basophils_percent) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)";
+
     $stmt = $conn->prepare($blood_test_query);
-    $stmt->bind_param("ddddddd", $_POST['haemoglobin_level'], $_POST['platelet_count'], $_POST['neutrophils_percent'], $_POST['lymphocytes_percent'], $_POST['monocytes_percent'], $_POST['eosinophils_percent'], $_POST['basophils_percent']);
+
+    $stmt->bind_param("ddddddd", 
+    $_POST['haemoglobin_level'], $_POST['platelet_count'], 
+    $_POST['neutrophils_percent'], $_POST['lymphocytes_percent'], 
+    $_POST['monocytes_percent'], $_POST['eosinophils_percent'], 
+    $_POST['basophils_percent']);
+
     $stmt->execute();
     $blood_test_id = $stmt->insert_id;
 
     // Insert into health_metric table
-    $health_metric_query = "INSERT INTO health_metrics (blood_pressure, body_mass_index, hemoglobin_a1c, pulse_rate, random_blood_sugar) VALUES (?, ?, ?, ?, ?)";
+    $health_metric_query = "INSERT INTO health_metrics (
+    patient_id, blood_pressure, body_mass_index, 
+    hemoglobin_a1c, pulse_rate, random_blood_sugar, created_at) 
+    VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
     $stmt = $conn->prepare($health_metric_query);
-    $stmt->bind_param("ddddd", $_POST['blood_pressure'], $_POST['body_mass_index'], $_POST['hemoglobin_a1c'], $_POST['pulse_rate'], $_POST['random_blood_sugar']);
+    $stmt->bind_param("iddddd", 
+    $patient_id, $_POST['blood_pressure'], $_POST['body_mass_index'], 
+    $_POST['hemoglobin_a1c'], $_POST['pulse_rate'], 
+    $_POST['random_blood_sugar']);
+
     $stmt->execute();
     $health_metric_id = $stmt->insert_id;
 
     // Insert into medical_report table
-    $medical_report_query = "INSERT INTO medical_reports (patient_id, lab_assistant_id, doctor_id, remarks, created_at, blood_test_id, health_metric_id) VALUES (?, ?, ?, ?, NOW(), ?, ?)";
+    $medical_report_query = "INSERT INTO medical_reports (
+    patient_id, lab_assistant_id, doctor_id, remarks, 
+    created_at, blood_test_id, health_metric_id) VALUES (?, ?, ?, ?, NOW(), ?, ?)";
     $stmt = $conn->prepare($medical_report_query);
-    $stmt->bind_param("iiisii", $patient_id, $lab_assistant_id, $_POST['doctor_id'], $_POST['remarks'], $blood_test_id, $health_metric_id);
+    $stmt->bind_param("iiisii", 
+    $patient_id, $lab_assistant_id, 
+    $_POST['doctor_id'], $_POST['remarks'], $blood_test_id, $health_metric_id);
     $stmt->execute();
 
     echo "<script>alert('Medical Report created successfully!'); window.location.href='lab_assistant_dashboard.php';</script>";

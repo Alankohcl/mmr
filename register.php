@@ -1,82 +1,119 @@
 <?php
+// registerWeb.php
 include 'database.php';
 
-header("Content-Type: application/json");
-
-if($_SERVER["REQUEST_METHOD"]==="POST"){
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $phone = $_POST['phone'];
-    $gender = $_POST['gender'];
-    $dob = $_POST['dob'];
-    $role = $_POST['role'];
-    $specialization = $_POST['specialization'];
-    $address = $_POST['address'];
-
-    if (!$name || !$email || !$password || !$phone || !$gender || !$dob || !$role || !$address) {
-        echo json_encode(["success" => false, "message" => "All fields are required."]);
-        exit();
+// Fetch hospitals for the dropdown
+$sql = "SELECT hospital_id, name FROM hospitals";
+$result = $conn->query($sql);
+$hospitals = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $hospitals[] = $row;
     }
-
-    //check if email exist
-    $sql_check = "SELECT email FROM users WHERE email = ?";
-    $stmt_check = $conn->prepare($sql_check);
-    if ($stmt_check === false) { 
-        // die("Prepare failed: " . $conn->error);
-        echo json_encode(["success" => false, "message" => "Prepare failed: " . $conn->error]);
-        exit();
-    }
-
-    $stmt_check->bind_param("s", $email);
-    $stmt_check->execute();
-    $result_check = $stmt_check->get_result();
-
-    if($result_check->num_rows > 0){
-        header("Location: register.html?error=Email already exist");
-        echo json_encode(["success" => false, "message" => "Specialization is required for doctors."]);
-        exit();
-    }
-
-    //handle registration based on role
-    if($role === "doctor"){
-        $sql = "INSERT INTO users (name, email, password, phone_number, gender, date_of_birth, address, role, specialization)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $stmt = $conn->prepare($sql);
-        if($stmt === false){
-            echo json_encode(["success" => false, "message" => "Prepare failed: " . $conn->error]);
-            exit();
-        }
-        $stmt->bind_param("sssssssss", $name, $email, $password, $phone, $gender, $dob, $address, $role, $specialization);
-    } else {
-        // register users
-        $sql = "INSERT INTO users (name, email, password, phone_number, gender, date_of_birth, address, role)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) { 
-            //die("Prepare failed: " . $conn->error);
-            echo json_encode(["success" => false, "message" => "Prepare failed: " . $conn->error]);
-            exit();
-        }
-        $stmt->bind_param("sssssssss", $name, $email, $password, $phone, $gender, $dob, $address, $role);
-    }
-    
-    if($stmt->execute()){
-        echo json_encode(["success" => true, "message" => "Registration successful."]);
-        header("Location: login.php?success=1");
-    }else{
-        header("Location: register.html?error=Registration failed");
-        echo json_encode(["success" => false, "message" => "Registration failed."]);
-    }
-
-    $stmt->close();
-    $stmt_check->close();
-    $conn->close();
-}else{
-    header("Location: register.html");
-    echo json_encode(["success" => false, "message" => "Invalid request method."]);
-    exit();
 }
-
 ?>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .hidden{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Register</h2>
+        <form method="POST", action="registerWeb.php">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+
+            <label for="phone">Phone Number:</label>
+            <input type="phone" id="phone" name="phone" required>
+            <br>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <br>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+            <br>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required onChange="toggleDoctorFields()">
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+                <option value="lab_assistant">Lab Assistant</option>
+                <option value="nurse">Nurse</option>
+                <option value="admin">Admin</option>
+            </select>
+            <br>
+
+            <div id="hospitalField" class="hidden">
+                <label for="hospital">Hospital:</label>
+                <select id="hospital" name="hospital">
+                    <!-- <option value="upnmMedicalCenter">UPNM Medical Center</option> -->
+                     <?php
+                        foreach ($hospitals as $hospital) {
+                            echo "<option value='{$hospital['hospital_id']}'>{$hospital['name']}</option>";
+                        }
+                     ?>
+                </select>
+            </div>
+            
+            <div id="specializationField" class="hidden">
+                <label for="specialization">Specialization:</label>
+                <select id="specialization" name="specialization">
+                    <option value="hematology">Hematology</option>
+                    <option value="cardiology">Cardiology</option>
+                </select>
+                <br>
+            </div>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" required></textarea>
+            <br>
+
+            <button type="submit">Register</button>
+            <button type="reset">Reset</button>
+        </form>
+
+        <script>
+            function toggleDoctorFields() {
+                const role = document.getElementById("role").value;
+                const hospitalField = document.getElementById("hospitalField");
+                const specializationField = document.getElementById("specializationField");
+
+                if (role === "doctor") {
+                    hospitalField.classList.remove("hidden");
+                    specializationField.classList.remove("hidden");
+                } else {
+                    hospitalField.classList.add("hidden");
+                    specializationField.classList.add("hidden");
+                }
+            }
+
+            // Initialize the form on page load
+            document.addEventListener("DOMContentLoaded", function () {
+                toggleDoctorFields(); // Set initial visibility
+            });
+
+        </script>
+    </body>
+</html>

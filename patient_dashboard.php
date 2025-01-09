@@ -69,14 +69,14 @@ $stmt->close();
         <div class="sidebar">
             <h4><?= htmlspecialchars($patient['name'])?></h4>
             <a href="#" onclick="showView('viewReports')">View Medical Report</a>
-            <a href="#" onlcick="showView('trendline')">Trendline Selection</a>
+            <a href="#" onclick="showView('trendline')">Trendline Selection</a>
             <a href="logout.php">Logout</a>
         </div>
 
         <div class="content">
             <!--View Medical Reports-->
             <div id="viewReports" class="view" style="display: none;">
-                <h2 Medical Reports History></h2>
+                <h2>Medical Reports History></h2>
                 <?php if(!empty($reports)): ?>
                     <table class="table table-striped">
                         <thead>
@@ -98,7 +98,7 @@ $stmt->close();
                         </tbody>
                     </table>
                 <?php else: ?>
-                    <P>No Medical Reports Found.</P>
+                    <p>No Medical Reports Found.</p>
                 <?php endif; ?>
             </div>
 
@@ -127,19 +127,32 @@ $stmt->close();
         function showView(viewId) {
             document.querySelectorAll('.view').forEach(view => view.style.display = 'none');
             document.getElementById(viewId).style.display = 'block';
+            window.location.hash = viewId;
         }
 
         // Function to generate trendline
         function generateTrendline(event) {
             event.preventDefault();
             const metric = document.getElementById('metric').value;
+            console.log("selected metric:", metric);
             
             // Fetch trendline data via AJAX
             fetch(`fetch_trendline_data.php?metric=${metric}`)
                 .then(response => response.json())
                 .then(data => {
-                    const ctx = document.getElementById('trendlineChart').getContext('2d');
-                    new Chart(ctx, {
+                    if(data.error){
+                        alert(data.error);
+                        return;
+                    }
+                    //destroy the existing chart if exist
+                    const chartCanvas = document.getElementById('trendlineChart');
+                    if (window.myChart){
+                        window.myChart.destroy();
+                    }
+
+                    //render the chart
+                    const ctx = chartCanvas.getContext('2d');
+                    window.myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: data.labels,
@@ -147,17 +160,33 @@ $stmt->close();
                                 label: metric.toUpperCase(),
                                 data: data.values,
                                 borderColor: 'rgba(75, 192, 192, 1)',
-                                borderWidth: 2
+                                borderWidth: 2,
+                                fill: false
                             }]
                         },
                         options: {
                             responsive: true,
                             scales: {
-                                x: { beginAtZero: true },
-                                y: { beginAtZero: true }
+                                x: { 
+                                    title: {
+                                        display:true,
+                                        text: 'Date'
+                                    }
+                                },
+                                y: { 
+                                    title: {
+                                        display:true,
+                                        text:metric.toUpperCase()
+                                    },
+                                    beginAtZero: true 
+                                }
                             }
                         }
                     });
+                })
+                .catch(error => {
+                    console.error("error fetching trendline data:", error);
+                    alert("Failed to fetch trendline data. Please try again, please ensure backend is returning valid JSON");
                 });
         }
 
