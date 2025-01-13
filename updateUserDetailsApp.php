@@ -7,15 +7,16 @@ header("Content-Type: application/json");
 $user_id = $_POST['user_id'];
 $name = $_POST['name'];
 $email = $_POST['email'];
+$password = $_POST['password'];
 $phone_number = $_POST['phone_number'];
 $gender = $_POST['gender'];
 $date_of_birth = $_POST['date_of_birth'];
 $address = $_POST['address'];
 
 // Update user details
-$sql = "UPDATE users SET name = ?, email = ?, phone_number = ?, gender = ?, date_of_birth = ?, address = ? WHERE user_id = ?";
+$sql = "UPDATE users SET name = ?, email = ?, password = ?,  phone_number = ?, gender = ?, date_of_birth = ?, address = ? WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssssi", $name, $email, $phone_number, $gender, $date_of_birth, $address, $user_id);
+$stmt->bind_param("sssssssi", $name, $email, $password, $phone_number, $gender, $date_of_birth, $address, $user_id);
 
 if ($stmt->execute()) {
     echo json_encode([

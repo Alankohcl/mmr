@@ -31,36 +31,38 @@ $conn->close();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-4">
-    <h1>Doctor Dashboard</h1>
-    <h2>Assigned Medical Reports</h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Report ID</th>
-            <th>Patient Name</th>
-            <th>Lab Assistant</th>
-            <th>Created At</th>
-            <th>Remarks</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($reports as $report): ?>
+<?php include 'header.php' ?>
+<?php include 'footer.php' ?>
+    <div class="container mt-4">
+        <h1>Doctor Dashboard</h1>
+        <h2>Assigned Medical Reports</h2>
+        <table class="table table-bordered">
+            <thead>
             <tr>
-                <td><?= $report['report_id'] ?></td>
-                <td><?= $report['patient_name'] ?></td>
-                <td><?= $report['lab_assistant_name'] ?></td>
-                <td><?= $report['created_at'] ?></td>
-                <td><?= $report['remarks'] ?></td>
-                <td>
-                    <a href="add_remarks.php?report_id=<?= $report['report_id'] ?>" class="btn btn-primary">Add Remarks</a>
-                </td>
+                <th>Report ID</th>
+                <th>Patient Name</th>
+                <th>Lab Assistant</th>
+                <th>Created At</th>
+                <th>Remarks</th>
+                <th>Action</th>
             </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+            <?php foreach ($reports as $report): ?>
+                <tr>
+                    <td><?= $report['report_id'] ?></td>
+                    <td><?= $report['patient_name'] ?></td>
+                    <td><?= $report['lab_assistant_name'] ?></td>
+                    <td><?= $report['created_at'] ?></td>
+                    <td><?= $report['remarks'] ?></td>
+                    <td>
+                        <a href="add_remarks.php?report_id=<?= $report['report_id'] ?>" class="btn btn-primary">Add Remarks</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

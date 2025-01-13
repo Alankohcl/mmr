@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 $user_id = $_GET['user_id'];
 
 // Fetch user details
-$sql = "SELECT user_id, name, email, phone_number, gender, date_of_birth, address FROM users WHERE user_id = ?";
+$sql = "SELECT user_id, name, email, phone_number, password, gender, date_of_birth, address FROM users WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();

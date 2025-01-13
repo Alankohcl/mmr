@@ -87,7 +87,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             <input type="email" id="email" name="email" required>
             <br>
 
-            <label for="password">Password</label>
+            <label for="password">Password: </label>
             <div>
                 <input type="password" id="password" name="password" required>
                 <span class="toggle-password" onClick="togglePasswordVisibility()">show</span>
@@ -99,10 +99,6 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             <p>New User?<a href="register.php">Register here</a></p>
 
         </form>
-        <br>
-        <h2>Admin Login</h2>
-        <button onclick="window.location.href='admin_login.php'">Admin Login</button>
-
         <script>
             function togglePasswordVisibility() {
             const passwordInput = document.getElementById("password");

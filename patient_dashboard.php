@@ -51,12 +51,6 @@ $stmt->close();
                 flex: 1;
                 padding: 20px;
             }
-            .sidebar img {
-                width: 100px;
-                height: 100px;
-                border-radius: 50%;
-                margin-bottom: 15px;
-            }
             .sidebar a {
                 display: block;
                 margin: 10px 0;
@@ -66,8 +60,11 @@ $stmt->close();
         </style>
     </head>
     <body>
+    <?php include 'header.php' ?>
+    <?php include 'footer.php' ?>
         <div class="sidebar">
             <h4><?= htmlspecialchars($patient['name'])?></h4>
+            <a href="view_user_profile.php">Profile</a>
             <a href="#" onclick="showView('viewReports')">View Medical Report</a>
             <a href="#" onclick="showView('trendline')">Trendline Selection</a>
             <a href="logout.php">Logout</a>
@@ -90,7 +87,7 @@ $stmt->close();
                                 <tr>
                                     <td><?= htmlspecialchars($report['created_at']) ?></td>
                                     <td>
-                                        <a href="view_report.php?id=<?= $report['report_id'] ?>" class="btn btn-sm btn-primary">View</a>
+                                        <a href="view_reports.php?id=<?= $report['report_id'] ?>" class="btn btn-sm btn-primary">View</a>
                                         <a href="download_report.php?id=<?= $report['report_id'] ?>" class="btn btn-sm btn-success">Download</a>
                                     </td>
                                 </tr>

@@ -1,5 +1,7 @@
 <?php
 session_start();
+include "database.php";
+
 if (!isset($_SESSION['role'])) {
     die("Session role not set.");
 }
@@ -7,6 +9,15 @@ if (!isset($_SESSION['role'])) {
 if ($_SESSION['role'] !== 'admin') {
     die("Unauthorized access. Role: " . $_SESSION['role']);
 }
+
+$admin_id = $_SESSION['user_id'];
+$query = "SELECT name, email FROM users WHERE user_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $admin_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+$stmt->close();
 
 ?>
 
@@ -18,9 +29,40 @@ if ($_SESSION['role'] !== 'admin') {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Dashboard</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                display: flex;
+                min-height: 100vh;
+                margin: 0;
+            }
+            .sidebar {
+                width: 250px;
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-right: 1px solid #ddd;
+            }
+            .sidebar a {
+                display: block;
+                margin: 10px 0;
+                color: #000;
+                text-decoration: none;
+            }
+            .content {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+            }
+        </style>
     </head>
     <body>
-        <div class="container-md-4">
+    <?php include 'header.php' ?>
+    <?php include 'footer.php' ?>
+        <div class="sidebar">
+            <h4><?= htmlspecialchars($admin['name'])?></h4>
+            <a href="logout.php">Logout</a>
+        </div>
+
+        <div class="content">
             <h1>Admin Dashboard</h1>
             <h2>Welcome Admin</h2>
             <div class="row">
@@ -52,28 +94,6 @@ if ($_SESSION['role'] !== 'admin') {
                     </div>
                 </div>
             </div>
-            <div id="content" class="mt-4"></div>
         </div>
-        
-        <div>
-            <h1>Test connection</h1>
-            <button onclick="testConnection()">Test Connection</button>
-            <pre id="output"></pre>
-        </div>
-
-        <script>
-            async function testConnetion(){
-                try{
-                    const response = await fetch(database.php);
-                    const data = await response.json();
-                    console.log(data);
-                    document.getElementById("output").textContext = JSON.stringify(data,null,2);
-
-                }catch(error){
-                    console.error("error connecting to the sever:", error);
-                    
-                }
-            }
-        </script>
     </body>
 </html>

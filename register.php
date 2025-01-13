@@ -26,6 +26,8 @@ if ($result->num_rows > 0) {
         </style>
     </head>
     <body>
+    <?php include 'header.php' ?>
+    <?php include 'footer.php' ?>
         <h2>Register</h2>
         <form method="POST", action="registerWeb.php">
             <label for="name">Full Name:</label>

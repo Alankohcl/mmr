@@ -34,68 +34,78 @@ $conn->close();
 <head>
     <title>Lab Assistant Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+                display: flex;
+                min-height: 100vh;
+                margin: 0;
+            }
+    </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Side Panel -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky">
-                <div class="pt-3">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Search Patient</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Create Medical Report</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="logout.php">Logout</a>
-                        </li>
-                    </ul>
+    <?php include 'header.php' ?>
+    <?php include 'footer.php' ?>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Side Panel -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <div class="pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="view_user_profile.php">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Search Patient</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="logout.php">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
 
-        <!-- Main Content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <h1>Lab Assistant Dashboard</h1>
-            <form method="POST" action="">
-                <div class="mb-3">
-                    <label for="search" class="form-label">Search Patient</label>
-                    <input type="text" id="search" name="search" class="form-control" placeholder="Enter patient name or ID">
-                </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <h1>Lab Assistant Dashboard</h1>
+                <form method="POST" action="">
+                    <div class="mb-3">
+                        <label for="search" class="form-label">Search Patient</label>
+                        <input type="text" id="search" name="search" class="form-control" placeholder="Enter patient name or ID">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
 
-            <?php if (!empty($patients)): ?>
-                <h2>Search Results</h2>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($patients as $patient): ?>
+                <?php if (!empty($patients)): ?>
+                    <h2>Search Results</h2>
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td><?= $patient['user_id'] ?></td>
-                            <td><?= $patient['name'] ?></td>
-                            <td><?= $patient['email'] ?></td>
-                            <td>
-                                <a href="create_medical_report.php?patient_id=<?= $patient['user_id'] ?>" class="btn btn-success">Create Medical Report</a>
-                            </td>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
                         </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
-        </main>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($patients as $patient): ?>
+                            <tr>
+                                <td><?= $patient['user_id'] ?></td>
+                                <td><?= $patient['name'] ?></td>
+                                <td><?= $patient['email'] ?></td>
+                                <td>
+                                    <a href="create_medical_report.php?patient_id=<?= $patient['user_id'] ?>" class="btn btn-success">Create Medical Report</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </main>
+        </div>
     </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
